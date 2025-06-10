@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IUser {
     handle: string;
     name: string;
-    email: string;
+    email: string; 
     password: string;
 }
 
