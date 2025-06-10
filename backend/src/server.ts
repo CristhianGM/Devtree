@@ -2,11 +2,14 @@ import express from "express";
 import 'dotenv/config';
 import { connectDB } from "./config/db";
 import router from "./router";
-
-const app = express();
-
+import cors from "cors";
+import { corsConfig } from "./config/cors";
 // Conexión a base de datos
 connectDB();
+const app = express();
+
+//cors
+app.use(cors(corsConfig));
 
 // Middleware para leer JSON
 app.use(express.json());

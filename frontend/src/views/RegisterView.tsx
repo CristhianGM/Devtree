@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../components/ErrorMessage";
+import { toast } from "sonner";
 import type { RegisterFormData } from "../types";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 export default function RegisterView() {
 
-    const initialValues : RegisterFormData = {
+    const initialValues: RegisterFormData = {
         name: "",
         email: "",
         handle: "",
@@ -14,17 +15,20 @@ export default function RegisterView() {
         password_confirmation: ""
     };
 
-    const { register, watch, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues });
+    const { register, watch, reset, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues });
 
     const password = watch("password");
+
     const handleRegister = async (formData: RegisterFormData) => {
         try {
-            const response = await axios.post("http://localhost:3000/auth/register", formData);
-            console.log(response)
+            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, formData);
+            toast.success(data.message);
+            reset();
         } catch (error) {
-            console.error("Error al registrar el usuario:", error);
+            if (isAxiosError(error) && error.response) {
+                console.log(error.response.data.error);
+            }
         }
-        
     };
 
     return (
@@ -82,7 +86,8 @@ export default function RegisterView() {
                         type="password"
                         placeholder="Password de Registro"
                         className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-                        {...register("password", { required: "El password es obligatorio",
+                        {...register("password", {
+                            required: "El password es obligatorio",
                             minLength: {
                                 value: 6,
                                 message: "El password debe tener al menos 8 caracteres",
@@ -99,7 +104,8 @@ export default function RegisterView() {
                         type="password"
                         placeholder="Repetir Password"
                         className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-                        {...register("password_confirmation", { required: "Repetir la contraseña es obligatorio",
+                        {...register("password_confirmation", {
+                            required: "Repetir la contraseña es obligatorio",
                             validate: value => value === password || "Las contraseñas no coinciden"
                         })}
                     />
@@ -118,5 +124,5 @@ export default function RegisterView() {
                     to="/login">¿Ya tienes una cuenta? Inicia Sesión</Link>
             </nav>
         </>
-    )
+    );
 }
