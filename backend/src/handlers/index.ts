@@ -82,12 +82,6 @@ export const login = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-        message: 'Login exitoso',
-        user: {
-            id: userExists._id,
-            name: userExists.name,
-            handle: userExists.handle,
-            email: userExists.email
-        }
+        message: 'Login exitoso'
     })
 };
