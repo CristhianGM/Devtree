@@ -3,6 +3,7 @@ import User from '../models/User';
 import { checkPsassword, hashPassword } from '../utils/auth';
 import slug from 'slug';
 import { validationResult } from 'express-validator';
+import { generateToken } from '../utils/jwt';
 
 export const createAccount = async (req: Request, res: Response) => {
     try {
@@ -81,7 +82,11 @@ export const login = async (req: Request, res: Response) => {
         return;
     }
 
-    res.status(200).json({
+    const token = generateToken({id: userExists._id});
+
+    res.send(token);
+    
+    /* res.status(200).json({
         message: 'Login exitoso'
-    })
+    }) */
 };
