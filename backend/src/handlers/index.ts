@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/User';
 import { checkPsassword, hashPassword } from '../utils/auth';
 import slug from 'slug';
+import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import { generateToken } from '../utils/jwt';
 
@@ -82,11 +83,15 @@ export const login = async (req: Request, res: Response) => {
         return;
     }
 
-    const token = generateToken({id: userExists._id});
+    const token = generateToken({ id: userExists._id });
 
     res.send(token);
-    
+
     /* res.status(200).json({
         message: 'Login exitoso'
     }) */
 };
+
+export const getUser = async (req: Request, res: Response) => {
+    res.json(req.user);
+}
